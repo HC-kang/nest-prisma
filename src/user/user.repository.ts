@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserValidator } from './user.validator';
 
 @Injectable()
 export class UserRepository {
@@ -7,5 +8,15 @@ export class UserRepository {
 
   getUsers() {
     return this.prisma.user.findMany();
+  }
+
+  getUser(userFindUniqueArgs: ReturnType<UserValidator['getUserValidator']>) {
+    return this.prisma.user.findUnique(userFindUniqueArgs);
+  }
+
+  createUser(data: ReturnType<UserValidator['createUserValidator']>) {
+    return this.prisma.user.create({
+      data,
+    });
   }
 }
