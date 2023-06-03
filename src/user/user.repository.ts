@@ -19,4 +19,16 @@ export class UserRepository {
       data,
     });
   }
+
+  updateUser(
+    userUpdateInput: ReturnType<UserValidator['updateUserValidator']>,
+  ) {
+    return this.prisma.user.update(userUpdateInput);
+  }
+
+  deleteUser(
+    userDeleteInput: ReturnType<UserValidator['deleteUserValidator']>,
+  ) {
+    return this.prisma.user.update(userDeleteInput);
+  }
 }
