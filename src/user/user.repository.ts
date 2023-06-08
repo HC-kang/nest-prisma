@@ -6,29 +6,31 @@ import { PrismaService } from '@prismaModule/prisma.service';
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
-  getUsers() {
-    return this.prisma.user.findMany();
+  async getUsers() {
+    return await this.prisma.user.findMany();
   }
 
-  getUser(userFindUniqueArgs: ReturnType<UserValidator['getUserValidator']>) {
-    return this.prisma.user.findUnique(userFindUniqueArgs);
+  async getUser(
+    userFindUniqueArgs: ReturnType<UserValidator['getUserValidator']>,
+  ) {
+    return await this.prisma.user.findUnique(userFindUniqueArgs);
   }
 
-  createUser(data: ReturnType<UserValidator['createUserValidator']>) {
-    return this.prisma.user.create({
+  async createUser(data: ReturnType<UserValidator['createUserValidator']>) {
+    return await this.prisma.user.create({
       data,
     });
   }
 
-  updateUser(
+  async updateUser(
     userUpdateInput: ReturnType<UserValidator['updateUserValidator']>,
   ) {
-    return this.prisma.user.update(userUpdateInput);
+    return await this.prisma.user.update(userUpdateInput);
   }
 
-  deleteUser(
+  async deleteUser(
     userDeleteInput: ReturnType<UserValidator['deleteUserValidator']>,
   ) {
-    return this.prisma.user.update(userDeleteInput);
+    return await this.prisma.user.update(userDeleteInput);
   }
 }

@@ -13,30 +13,30 @@ export class UserService {
     private userValidator: UserValidator,
   ) {}
 
-  getUsers() {
-    return this.userRepository.getUsers();
+  async getUsers() {
+    return await this.userRepository.getUsers();
   }
 
-  getUser(param: GetUserParam) {
-    return this.userRepository.getUser(
+  async getUser(param: GetUserParam) {
+    return await this.userRepository.getUser(
       this.userValidator.getUserValidator(param),
     );
   }
 
-  createUser(body: CreateUserBody) {
-    return this.userRepository.createUser(
+  async createUser(body: CreateUserBody) {
+    return await this.userRepository.createUser(
       this.userValidator.createUserValidator(body),
     );
   }
 
-  updateUser(param: UpdateUserParam, body: UpdateUserBody) {
-    return this.userRepository.updateUser(
+  async updateUser(param: UpdateUserParam, body: UpdateUserBody) {
+    return await this.userRepository.updateUser(
       this.userValidator.updateUserValidator(param, body),
     );
   }
 
-  deleteUser(param: DeleteUserParam) {
-    return this.userRepository.deleteUser(
+  async deleteUser(param: DeleteUserParam) {
+    return await this.userRepository.deleteUser(
       this.userValidator.deleteUserValidator(param),
     );
   }
