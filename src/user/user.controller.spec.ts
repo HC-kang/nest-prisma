@@ -27,10 +27,8 @@ describe('UserController', () => {
     mockUserService = module.get<UserService>(UserService);
   });
 
-  describe('UserController Test', () => {
-    it('should be defined', () => {
-      expect(userController).toBeDefined();
-    });
+  it('should be defined', () => {
+    expect(userController).toBeDefined();
   });
 
   describe('getUsers Test', () => {
@@ -67,7 +65,7 @@ describe('UserController', () => {
   });
 
   describe('getUser Test', () => {
-    it('should return a user', async () => {
+    it('should return an user', async () => {
       // Arrange
       const param: GetUserParam = {
         userId: 1,

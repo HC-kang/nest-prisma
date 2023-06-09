@@ -13,7 +13,10 @@ import { CreateUserBody } from './dto/create_user.dto';
 import { UpdateUserBody, UpdateUserParam } from './dto/update_user.dto';
 import { DeleteUserParam } from './dto/delete_user.dto';
 
-@Controller('users')
+@Controller({
+  path: 'users',
+  version: '1',
+})
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
