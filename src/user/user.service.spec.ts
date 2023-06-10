@@ -6,6 +6,7 @@ import { User } from '@prisma/client';
 import { GetUserParam } from './dto/get_user.dto';
 import { UpdateUserBody, UpdateUserParam } from './dto/update_user.dto';
 import { CreateUserBody } from './dto/create_user.dto';
+import { DeleteUserParam } from './dto/delete_user.dto';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -155,7 +156,7 @@ describe('UserService', () => {
   describe('deleteUser Test', () => {
     it('should return an user', async () => {
       // Arrange
-      const param: GetUserParam = {
+      const param: DeleteUserParam = {
         userId: 1,
       };
       const mockUser: User = {

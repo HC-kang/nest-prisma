@@ -17,9 +17,9 @@ export class UserRepository {
   }
 
   async createUser(
-    createUserArgs: ReturnType<UserValidator['createUserValidator']>,
+    userCreateArgs: ReturnType<UserValidator['createUserValidator']>,
   ) {
-    return await this.prisma.user.create({ data: createUserArgs });
+    return await this.prisma.user.create({ data: userCreateArgs });
   }
 
   async updateUser(
