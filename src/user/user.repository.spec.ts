@@ -146,7 +146,7 @@ describe('UserRepository', () => {
   });
 
   describe('deleteUser', () => {
-    it('should delete a user', async () => {
+    it('should delete an user', async () => {
       // Arrange
       const param: DeleteUserParam = {
         userId: 1,
