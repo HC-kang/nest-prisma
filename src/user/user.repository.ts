@@ -16,10 +16,10 @@ export class UserRepository {
     return await this.prisma.user.findUnique(userFindUniqueArgs);
   }
 
-  async createUser(data: ReturnType<UserValidator['createUserValidator']>) {
-    return await this.prisma.user.create({
-      data,
-    });
+  async createUser(
+    createUserArgs: ReturnType<UserValidator['createUserValidator']>,
+  ) {
+    return await this.prisma.user.create({ data: createUserArgs });
   }
 
   async updateUser(
