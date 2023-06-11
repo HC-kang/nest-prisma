@@ -4,16 +4,22 @@ import { SecretValidator } from './secret.validator';
 import { SecretRepository } from './secret.repository';
 import { GetSecretParam } from './dto/get_secret.dto';
 import { Secret } from '@prisma/client';
-import { CreateSecretBody } from './dto/create_secret.dto';
 import { DeleteSecretParam } from './dto/delete_secret.dto';
+import { UniqueTokenGeneratorService } from '@src/util/unique-token-generator.service';
+import { UserCreateSecretBody } from './dto/user_create_secret.dto';
 
+const MOCK_UNIQUE_TOKEN = 'generatedUniqueToken';
 describe('SecretService', () => {
   let secretService: SecretService;
   let secretValidator: SecretValidator;
   let mockSecretRepository: Partial<SecretRepository>;
+  let mockUniqueTokenGeneratorService: UniqueTokenGeneratorService;
 
   beforeEach(async () => {
     mockSecretRepository = {};
+    mockUniqueTokenGeneratorService = {
+      generateToken: jest.fn().mockReturnValue(MOCK_UNIQUE_TOKEN),
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SecretService,
@@ -21,6 +27,10 @@ describe('SecretService', () => {
         {
           provide: SecretRepository,
           useValue: mockSecretRepository,
+        },
+        {
+          provide: UniqueTokenGeneratorService,
+          useValue: mockUniqueTokenGeneratorService,
         },
       ],
     }).compile();
@@ -35,7 +45,7 @@ describe('SecretService', () => {
   });
 
   describe('getSecret Test', () => {
-    it('should return a secret', async () => {
+    it('should return a secret when it is found', async () => {
       // Arrange
       const param: GetSecretParam = {
         urlId: '123456qwerty',
@@ -54,7 +64,7 @@ describe('SecretService', () => {
       const result = await secretService.getSecret(param);
 
       // Assert
-      expect(result).toEqual(mockSecret);
+      expect(result).toEqual(mockSecret.secret);
       expect(mockSecretRepository.getSecret).toBeCalledTimes(1);
       expect(mockSecretRepository.getSecret).toBeCalledWith(
         secretFindUniqueArgs,
@@ -63,27 +73,29 @@ describe('SecretService', () => {
   });
 
   describe('createSecret Test', () => {
-    it('should create and return a secret', async () => {
+    it('should create and return a urlId', async () => {
       // Arrange
-      const mockBody: CreateSecretBody = {
-        urlId: '123456qwerty',
+      const mockBody: UserCreateSecretBody = {
         secret: 'myValidSecret',
       };
       const mockSecret: Secret = {
-        urlId: '123456qwerty',
+        urlId: MOCK_UNIQUE_TOKEN,
         createdAt: undefined,
         updatedAt: undefined,
         deletedAt: undefined,
         secret: 'myValidSecret',
       };
-      const secretCreateArgs = secretValidator.createSecretValidator(mockBody);
+      const secretCreateArgs = secretValidator.createSecretValidator({
+        urlId: MOCK_UNIQUE_TOKEN,
+        ...mockBody,
+      });
       mockSecretRepository.createSecret = jest.fn().mockReturnValue(mockSecret);
 
       // Act
       const result = await secretService.createSecret(mockBody);
 
       // Assert
-      expect(result).toEqual(mockSecret);
+      expect(result).toEqual(mockSecret.urlId);
       expect(mockSecretRepository.createSecret).toBeCalledTimes(1);
       expect(mockSecretRepository.createSecret).toBeCalledWith(
         secretCreateArgs,
