@@ -95,34 +95,36 @@ describe('UserService', () => {
     });
   });
 
-  it('createUser Test', async () => {
-    // Arrange
-    const mockBody: CreateUserBody = {
-      name: 'Test User',
-      email: 'test@example.com',
-    };
-    const mockUser: User = {
-      id: 1,
-      name: 'Test User',
-      email: 'test@example.com',
-      createdAt: undefined,
-      active: 0,
-      role: 'USER',
-    };
-    const userCreateArgs = userValidator.createUserValidator(mockBody);
-    mockUserRepository.createUser = jest.fn().mockResolvedValue(mockUser);
+  describe('createUser Test', () => {
+    it('should create and return an user', async () => {
+      // Arrange
+      const mockBody: CreateUserBody = {
+        name: 'Test User',
+        email: 'test@example.com',
+      };
+      const mockUser: User = {
+        id: 1,
+        name: 'Test User',
+        email: 'test@example.com',
+        createdAt: undefined,
+        active: 0,
+        role: 'USER',
+      };
+      const userCreateArgs = userValidator.createUserValidator(mockBody);
+      mockUserRepository.createUser = jest.fn().mockResolvedValue(mockUser);
 
-    // Act
-    const result = await userService.createUser(mockBody);
+      // Act
+      const result = await userService.createUser(mockBody);
 
-    // Assert
-    expect(result).toEqual(mockUser);
-    expect(mockUserRepository.createUser).toBeCalledTimes(1);
-    expect(mockUserRepository.createUser).toBeCalledWith(userCreateArgs);
+      // Assert
+      expect(result).toEqual(mockUser);
+      expect(mockUserRepository.createUser).toBeCalledTimes(1);
+      expect(mockUserRepository.createUser).toBeCalledWith(userCreateArgs);
+    });
   });
 
   describe('updateUser Test', () => {
-    it('should return an user', async () => {
+    it('should update and return an user', async () => {
       // Arrange
       const param: UpdateUserParam = {
         userId: 1,
@@ -154,7 +156,7 @@ describe('UserService', () => {
   });
 
   describe('deleteUser Test', () => {
-    it('should return an user', async () => {
+    it('should delete and return an user', async () => {
       // Arrange
       const param: DeleteUserParam = {
         userId: 1,
