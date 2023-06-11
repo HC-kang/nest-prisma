@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { SecretService } from './secret.service';
+import { GetSecretParam } from './dto/get_secret.dto';
+import { CreateSecretBody } from './dto/create_secret.dto';
 
 @Controller({
   path: 'secret',
@@ -9,7 +11,17 @@ export class SecretController {
   constructor(private readonly secretService: SecretService) {}
 
   @Get()
-  async getSecret() {
-    return 'secret';
+  async getSecret(param: GetSecretParam) {
+    return await this.secretService.getSecret(param);
+  }
+
+  @Post()
+  async createSecret(body: CreateSecretBody) {
+    return await this.secretService.createSecret(body);
+  }
+
+  @Post()
+  async deleteSecret(param: GetSecretParam) {
+    return await this.secretService.deleteSecret(param);
   }
 }
