@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserValidator } from './user.validator';
 import { PrismaService } from '@prismaModule/prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UserRepository {
@@ -11,9 +12,17 @@ export class UserRepository {
   }
 
   async getUser(
-    userFindUniqueArgs: ReturnType<UserValidator['getUserValidator']>,
+    userFindUniqueOrThrowArgs: ReturnType<UserValidator['getUserValidator']>,
   ) {
-    return await this.prisma.user.findUnique(userFindUniqueArgs);
+    try {
+      const user = await this.prisma.user.findUniqueOrThrow(userFindUniqueOrThrowArgs);
+      return user
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
+        throw new NotFoundException('User Not Found Exception');
+      }
+      throw new Error(e.message);
+    }
   }
 
   async createUser(

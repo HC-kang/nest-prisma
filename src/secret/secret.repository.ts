@@ -7,9 +7,9 @@ export class SecretRepository {
   constructor(private prisma: PrismaService) {}
 
   async getSecret(
-    secretFindUniqueArgs: ReturnType<SecretValidator['getSecretValidator']>,
+    secretFindUniqueOrThrowArgs: ReturnType<SecretValidator['getSecretValidator']>,
   ) {
-    return await this.prisma.secret.findUnique(secretFindUniqueArgs);
+    return await this.prisma.secret.findUniqueOrThrow(secretFindUniqueOrThrowArgs);
   }
 
   async createSecret(

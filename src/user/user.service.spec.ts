@@ -82,7 +82,7 @@ describe('UserService', () => {
         active: 0,
         role: 'USER',
       };
-      const userFindUniqueArgs = userValidator.getUserValidator(param);
+      const userFindUniqueOrThrowArgs = userValidator.getUserValidator(param);
       mockUserRepository.getUser = jest.fn().mockResolvedValue(mockUser);
 
       // Act
@@ -91,7 +91,7 @@ describe('UserService', () => {
       // Assert
       expect(result).toEqual(mockUser);
       expect(mockUserRepository.getUser).toBeCalledTimes(1);
-      expect(mockUserRepository.getUser).toBeCalledWith(userFindUniqueArgs);
+      expect(mockUserRepository.getUser).toBeCalledWith(userFindUniqueOrThrowArgs);
     });
   });
 

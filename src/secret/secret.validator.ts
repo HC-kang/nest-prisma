@@ -7,8 +7,7 @@ import { DeleteSecretParam } from './dto/delete_secret.dto';
 @Injectable()
 export class SecretValidator {
   getSecretValidator({ urlId }: GetSecretParam) {
-    return Prisma.validator<Prisma.SecretFindUniqueArgs>()({
-      rejectOnNotFound: true,
+    return Prisma.validator<Prisma.SecretFindFirstOrThrowArgs>()({
       where: {
         urlId,
       },

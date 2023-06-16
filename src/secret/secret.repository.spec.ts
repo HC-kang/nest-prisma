@@ -37,17 +37,17 @@ describe('SecretRepository', () => {
         deletedAt: undefined,
         secret: 'myValidSecret',
       };
-      const secretFindUniqueArgs = secretValidator.getSecretValidator(param);
-      prismaService.secret.findUnique = jest.fn().mockResolvedValue(mockSecret);
+      const secretFindUniqueOrThrowArgs = secretValidator.getSecretValidator(param);
+      prismaService.secret.findUniqueOrThrow = jest.fn().mockResolvedValue(mockSecret);
 
       // Act
-      const result = await secretRepository.getSecret(secretFindUniqueArgs);
+      const result = await secretRepository.getSecret(secretFindUniqueOrThrowArgs);
 
       // Assert
       expect(result).toEqual(mockSecret);
-      expect(prismaService.secret.findUnique).toBeCalledTimes(1);
-      expect(prismaService.secret.findUnique).toBeCalledWith(
-        secretFindUniqueArgs,
+      expect(prismaService.secret.findUniqueOrThrow).toBeCalledTimes(1);
+      expect(prismaService.secret.findUniqueOrThrow).toBeCalledWith(
+        secretFindUniqueOrThrowArgs,
       );
     });
   });

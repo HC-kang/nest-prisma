@@ -57,7 +57,7 @@ describe('SecretService', () => {
         deletedAt: undefined,
         secret: 'myValidSecret',
       };
-      const secretFindUniqueArgs = secretValidator.getSecretValidator(param);
+      const secretFindUniqueOrThrowArgs = secretValidator.getSecretValidator(param);
       mockSecretRepository.getSecret = jest.fn().mockReturnValue(mockSecret);
 
       // Act
@@ -67,7 +67,7 @@ describe('SecretService', () => {
       expect(result).toEqual(mockSecret.secret);
       expect(mockSecretRepository.getSecret).toBeCalledTimes(1);
       expect(mockSecretRepository.getSecret).toBeCalledWith(
-        secretFindUniqueArgs,
+        secretFindUniqueOrThrowArgs,
       );
     });
   });

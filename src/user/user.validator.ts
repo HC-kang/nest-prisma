@@ -8,8 +8,7 @@ import { DeleteUserParam } from './dto/delete_user.dto';
 @Injectable()
 export class UserValidator {
   getUserValidator({ userId }: GetUserParam) {
-    return Prisma.validator<Prisma.UserFindUniqueArgs>()({
-      rejectOnNotFound: true,
+    return Prisma.validator<Prisma.UserFindUniqueOrThrowArgs>()({
       where: {
         id: Number(userId),
       },

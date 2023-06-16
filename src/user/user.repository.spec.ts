@@ -72,16 +72,16 @@ describe('UserRepository', () => {
         active: 0,
         role: 'USER',
       };
-      const userFindUniqueArgs = userValidator.getUserValidator(param);
-      prismaService.user.findUnique = jest.fn().mockResolvedValue(mockUser);
+      const userFindUniqueOrThrowArgs = userValidator.getUserValidator(param);
+      prismaService.user.findUniqueOrThrow = jest.fn().mockResolvedValue(mockUser);
 
       // Act
-      const result = await userRepository.getUser(userFindUniqueArgs);
+      const result = await userRepository.getUser(userFindUniqueOrThrowArgs);
 
       // Assert
       expect(result).toEqual(mockUser);
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith(userFindUniqueArgs);
+      expect(prismaService.user.findUniqueOrThrow).toBeCalledTimes(1);
+      expect(prismaService.user.findUniqueOrThrow).toBeCalledWith(userFindUniqueOrThrowArgs);
     });
   });
 

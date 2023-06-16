@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { GetUserParam } from './dto/get_user.dto';
 import { UserValidator } from './user.validator';
@@ -18,6 +18,10 @@ export class UserService {
   }
 
   async getUser(param: GetUserParam) {
+    // const user = 
+    // if (!user) {
+    //   throw new NotFoundException('user not found error');
+    // }
     return await this.userRepository.getUser(
       this.userValidator.getUserValidator(param),
     );
