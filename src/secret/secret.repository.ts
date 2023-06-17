@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prismaModule/prisma.service';
 import { SecretValidator } from './secret.validator';
 
@@ -7,9 +7,17 @@ export class SecretRepository {
   constructor(private prisma: PrismaService) {}
 
   async getSecret(
-    secretFindUniqueOrThrowArgs: ReturnType<SecretValidator['getSecretValidator']>,
+    secretFindUniqueOrThrowArgs: ReturnType<
+      SecretValidator['getSecretValidator']
+    >,
   ) {
-    return await this.prisma.secret.findUniqueOrThrow(secretFindUniqueOrThrowArgs);
+    try {
+      return await this.prisma.secret.findUniqueOrThrow(
+        secretFindUniqueOrThrowArgs,
+      );
+    } catch (e) {
+      throw new NotFoundException('Not found secret');
+    }
   }
 
   async createSecret(

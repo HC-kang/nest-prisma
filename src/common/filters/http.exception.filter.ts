@@ -11,7 +11,6 @@ import {
 import { Request, Response } from 'express';
 import { NotFoundError } from 'rxjs';
 
-
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
@@ -20,6 +19,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    console.log(exception);
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     if (exception instanceof NotFoundError) {
       this.logger.error(`Not found error: ${exception.message}`);
       res.status(404).json({ message: exception.message });

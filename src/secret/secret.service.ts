@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SecretRepository } from './secret.repository';
 import { SecretValidator } from './secret.validator';
 import { Secret } from '@prisma/client';
@@ -19,6 +19,7 @@ export class SecretService {
     const result = await this.secretRepository.getSecret(
       this.secretValidator.getSecretValidator(param),
     );
+    // if (!result) throw new NotFoundException('Not found secret');
     return result?.secret;
   }
 
