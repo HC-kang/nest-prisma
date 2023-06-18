@@ -1,11 +1,13 @@
 -- CreateTable
 CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `email` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
-    `active` INTEGER NOT NULL,
+    `active` SMALLINT NOT NULL DEFAULT 1,
     `role` ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -14,13 +16,25 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `Post` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
     `published` BOOLEAN NOT NULL DEFAULT false,
     `title` VARCHAR(255) NOT NULL,
     `authorId` INTEGER NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Secret` (
+    `urlId` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
+    `secret` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `Secret_urlId_key`(`urlId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey

@@ -9,6 +9,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { EmailConflictException } from '../exceptions/email.conflict.exception';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -18,6 +19,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
+
+    if (exception instanceof EmailConflictException) {
+      this.logger.error(`Email conflict exception: ${exception.message}`);
+      res.status(409).json({ message: exception.message });
+      return;
+    }
 
     if (exception instanceof NotFoundException) {
       this.logger.error(`Not found exception: ${exception.message}`);

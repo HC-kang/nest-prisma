@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserValidator } from './user.validator';
 import { PrismaService } from '@prismaModule/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { EmailConflictException } from '@src/common/exceptions/email.conflict.exception';
 
 @Injectable()
 export class UserRepository {
@@ -11,12 +13,12 @@ export class UserRepository {
     return await this.prisma.user.findMany();
   }
 
-  async getUser(
-    userFindUniqueOrThrowArgs: ReturnType<UserValidator['getUserValidator']>,
-  ) {
+  async getUser(id: number) {
     try {
-      const user = await this.prisma.user.findUniqueOrThrow(userFindUniqueOrThrowArgs);
-      return user
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: { id },
+      });
+      return user;
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
         throw new NotFoundException('User Not Found Exception');
@@ -25,21 +27,24 @@ export class UserRepository {
     }
   }
 
-  async createUser(
-    userCreateArgs: ReturnType<UserValidator['createUserValidator']>,
-  ) {
-    return await this.prisma.user.create({ data: userCreateArgs });
+  async createUser(createUserDto: CreateUserDto) {
+    try {
+      return await this.prisma.user.create({ data: createUserDto });
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002')
+        throw new EmailConflictException();
+      throw new Error(e.message);
+    }
   }
 
-  async updateUser(
-    userUpdateInput: ReturnType<UserValidator['updateUserValidator']>,
-  ) {
-    return await this.prisma.user.update(userUpdateInput);
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+    return await this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
   }
 
-  async deleteUser(
-    userDeleteInput: ReturnType<UserValidator['deleteUserValidator']>,
-  ) {
-    return await this.prisma.user.update(userDeleteInput);
+  async deleteUser(id: number) {
+    return await this.prisma.user.delete({ where: { id } });
   }
 }
