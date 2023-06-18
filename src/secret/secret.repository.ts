@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prismaModule/prisma.service';
 import { SecretValidator } from './secret.validator';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class SecretRepository {
@@ -16,7 +17,9 @@ export class SecretRepository {
         secretFindUniqueOrThrowArgs,
       );
     } catch (e) {
-      throw new NotFoundException('Not found secret');
+      if (e instanceof PrismaClientKnownRequestError)
+        throw new NotFoundException('Not found secret');
+      throw e;
     }
   }
 
