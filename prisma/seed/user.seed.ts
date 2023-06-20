@@ -1,24 +1,27 @@
-import { Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
-export const users = Prisma.validator<Prisma.UserCreateManyArgs>()({
-  data: [
-    {
-      name: 'admin',
-      email: 'admin@admin.com',
-      active: 1,
-      role: 'ADMIN',
+export const seedUsers = async (prisma: PrismaClient) => {
+  const user1 = await prisma.user.upsert({
+    where: { email: 'sabin@adams.com' },
+    update: {
+      password: 'passwordSabin',
     },
-    {
-      name: 'test',
-      email: 'test@test.com',
-      active: 0,
-      role: 'USER',
+    create: {
+      email: 'sabin@adams.com',
+      name: 'Sabin Adams',
+      password: 'passwordSabin',
     },
-    {
-      name: 'test2',
-      email: 'test2@test2,com',
-      active: 1,
-      role: 'USER',
+  });
+
+  const user2 = await prisma.user.upsert({
+    where: { email: 'alex@ruheni.com' },
+    update: {
+      password: 'passwordAlex',
     },
-  ],
-});
+    create: {
+      email: 'alex@ruheni.com',
+      name: 'Alex Ruheni',
+      password: 'passwordAlex',
+    },
+  });
+};

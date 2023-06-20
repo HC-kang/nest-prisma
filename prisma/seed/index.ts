@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { users } from './user.seed';
+import { seedUsers } from './user.seed';
 
 const prisma = new PrismaClient();
 
 const main = async () => {
-  await prisma.user.createMany(users);
+  await seedUsers(prisma);
 };
 
 main()
