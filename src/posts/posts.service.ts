@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { PrismaService } from '@prismaModule/prisma.service';
 import { PostsRepository } from './posts.repository';
+import { UserEntity } from '@src/users/entities/user.entity';
 
 @Injectable()
 export class PostsService {
@@ -24,11 +24,21 @@ export class PostsService {
     return await this.postsRepository.findOne(id);
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
+  async update(
+    id: number,
+    updatePostDto: UpdatePostDto,
+    currentUser: Partial<UserEntity>,
+  ) {
+    if (currentUser.id !== id) {
+      throw new UnauthorizedException('You are not authorized to do this');
+    }
     return await this.postsRepository.update(id, updatePostDto);
   }
 
-  async remove(id: number) {
+  async remove(id: number, currentUser: Partial<UserEntity>) {
+    if (currentUser.id !== id) {
+      throw new UnauthorizedException('You are not authorized to do this');
+    }
     return await this.postsRepository.remove(id);
   }
 }

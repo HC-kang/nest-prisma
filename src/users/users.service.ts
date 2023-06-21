@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from '@prismaModule/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
+import { UserEntity } from './entities/user.entity';
 
 export const roundsOfHashing = 10;
 @Injectable()
@@ -25,11 +25,18 @@ export class UsersService {
     return await this.usersRepository.findAll();
   }
 
-  async findOne(id: number) {
-    return await this.usersRepository.findOne(id);
+  async findOne(userId: number) {
+    return await this.usersRepository.findOne(userId);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    userId: number,
+    updateUserDto: UpdateUserDto,
+    currentUser: Partial<UserEntity>,
+  ) {
+    if (currentUser.id !== userId) {
+      throw new UnauthorizedException('You are not authorized to do this');
+    }
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(
         updateUserDto.password,
@@ -37,10 +44,13 @@ export class UsersService {
       );
     }
 
-    return await this.usersRepository.update(id, updateUserDto);
+    return await this.usersRepository.update(userId, updateUserDto);
   }
 
-  async remove(id: number) {
-    return await this.usersRepository.remove(id);
+  async remove(userId: number, currentUser: Partial<UserEntity>) {
+    if (currentUser.id !== userId) {
+      throw new UnauthorizedException('You are not authorized to do this');
+    }
+    return await this.usersRepository.remove(userId);
   }
 }

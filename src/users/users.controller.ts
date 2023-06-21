@@ -19,7 +19,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
-import { JwtAuthGuard } from '@src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '@src/common/guards/jwt-auth.guard';
+import { CurrentUser } from '@src/common/decorators/current-user.decorator';
 
 @Controller({
   path: 'users',
@@ -59,15 +60,21 @@ export class UsersController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() user: Partial<UserEntity>,
   ) {
-    return new UserEntity(await this.usersService.update(id, updateUserDto));
+    return new UserEntity(
+      await this.usersService.update(id, updateUserDto, user),
+    );
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    return new UserEntity(await this.usersService.remove(id));
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: Partial<UserEntity>,
+  ) {
+    return new UserEntity(await this.usersService.remove(id, user));
   }
 }
