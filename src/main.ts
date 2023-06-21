@@ -6,11 +6,13 @@ import { HttpExceptionFilter } from './common/filters/http.exception.filter';
 import { TransformInterceptor } from './common/filters/transform.interceptors';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-client.exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: CustomLogger,
   });
+  const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
 

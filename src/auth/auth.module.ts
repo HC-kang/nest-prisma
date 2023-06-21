@@ -5,7 +5,8 @@ import { PrismaModule } from '@prismaModule/prisma.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '@src/users/users.module';
-import { JwtStrategy } from './jwt.strategy';
+import { ConfigService } from '@nestjs/config';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 export const jwtSecret = 'jwtSecret';
 
@@ -13,9 +14,14 @@ export const jwtSecret = 'jwtSecret';
   imports: [
     PrismaModule,
     PassportModule,
-    JwtModule.register({
-      secret: jwtSecret,
-      signOptions: { expiresIn: '5m' },
+    JwtModule.registerAsync({
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: `${config.get<string>('JWT_EXPIRATION')}s`,
+        },
+      }),
+      inject: [ConfigService],
     }),
     UsersModule,
   ],
