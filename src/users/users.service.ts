@@ -3,11 +3,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@prismaModule/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { UsersRepository } from './users.repository';
 
 export const roundsOfHashing = 10;
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(
@@ -17,15 +18,15 @@ export class UsersService {
 
     createUserDto.password = hashedPassword;
 
-    return this.prisma.user.create({ data: createUserDto });
+    return await this.usersRepository.create(createUserDto);
   }
 
   async findAll() {
-    return await this.prisma.user.findMany();
+    return await this.usersRepository.findAll();
   }
 
   async findOne(id: number) {
-    return await this.prisma.user.findUniqueOrThrow({ where: { id } });
+    return await this.usersRepository.findOne(id);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -36,13 +37,10 @@ export class UsersService {
       );
     }
 
-    return await this.prisma.user.update({
-      where: { id },
-      data: updateUserDto,
-    });
+    return await this.usersRepository.update(id, updateUserDto);
   }
 
   async remove(id: number) {
-    return await this.prisma.user.delete({ where: { id } });
+    return await this.usersRepository.remove(id);
   }
 }
