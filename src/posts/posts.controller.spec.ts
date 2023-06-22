@@ -4,14 +4,22 @@ import { PostsService } from './posts.service';
 
 describe('PostsController', () => {
   let controller: PostsController;
+  let mockPostsService: Partial<PostsService>;
 
   beforeEach(async () => {
+    mockPostsService = {};
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostsController],
-      providers: [PostsService],
+      providers: [
+        {
+          provide: PostsService,
+          useValue: mockPostsService,
+        },
+      ],
     }).compile();
 
     controller = module.get<PostsController>(PostsController);
+    mockPostsService = module.get<PostsService>(PostsService);
   });
 
   it('should be defined', () => {
