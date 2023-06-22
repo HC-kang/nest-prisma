@@ -8,8 +8,6 @@ import { UsersModule } from '@src/users/users.module';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
-export const jwtSecret = 'jwtSecret';
-
 @Module({
   imports: [
     PrismaModule,

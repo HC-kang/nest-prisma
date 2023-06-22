@@ -13,11 +13,16 @@ import * as Joi from 'joi';
     AuthModule,
     PostsModule,
     ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION: Joi.string().required(),
-        PORT: Joi.number().required(),
+        NEST_APP_PORT: Joi.number().required(),
+        API_AUTH_ADMIN_USERNAME: Joi.string().required(),
+        API_AUTH_ADMIN_PASSWORD: Joi.string().required(),
+        SWAGGER_DOC_URL: Joi.string().required().pattern(new RegExp('^/.*$')),
+        CORS_ORIGIN: Joi.string().required(),
       }),
     }),
   ],
