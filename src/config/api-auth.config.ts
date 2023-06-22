@@ -12,8 +12,6 @@ export function setupApiAuth(app: INestApplication): void {
     },
   };
   const createUrlArray = (url: string): string[] => [url, url + '-json'];
-  console.log(options);
-  console.log(createUrlArray(configService.get<string>('SWAGGER_DOC_URL')));
   app.use(
     createUrlArray(configService.get<string>('SWAGGER_DOC_URL')),
     expressBasicAuth(options),
