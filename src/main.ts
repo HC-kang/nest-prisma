@@ -5,8 +5,9 @@ import { CustomLogger } from './config/winston.config';
 import { HttpExceptionFilter } from './common/filters/http.exception.filter';
 import { TransformInterceptor } from './common/filters/transform.interceptors';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-client.exception.filter';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { setupApiAuth } from './config/api-auth.config';
+import { setupSwagger } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,8 +15,10 @@ async function bootstrap() {
   });
   const configService = app.get(ConfigService);
 
+  app.enableCors({
+    origin: configService.get<string>('CORS_ORIGIN'),
+  });
   app.setGlobalPrefix('api');
-
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(
     new HttpExceptionFilter(),
@@ -27,16 +30,10 @@ async function bootstrap() {
   );
   app.enableVersioning();
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Prisma NestJS Board')
-    .setDescription('Prisma NestJS Board API Docs')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+  if (configService.get<string>('NODE_ENV') !== 'development')
+    setupApiAuth(app);
+  setupSwagger(app);
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
-
-  await app.listen(3000);
+  await app.listen(configService.get<number>('NEST_APP_PORT'));
 }
 bootstrap();
