@@ -1,13 +1,11 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { CustomLogger } from './config/winston.config';
+import { CustomLogger, setupApiAuth, setupSwagger } from './config';
 import { HttpExceptionFilter } from './common/filters/http.exception.filter';
 import { TransformInterceptor } from './common/filters/transform.interceptors';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-client.exception.filter';
 import { ConfigService } from '@nestjs/config';
-import { setupApiAuth } from './config/api-auth.config';
-import { setupSwagger } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
