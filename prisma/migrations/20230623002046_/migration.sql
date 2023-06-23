@@ -26,5 +26,15 @@ CREATE TABLE `posts` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `secrets` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `urlId` VARCHAR(191) NOT NULL,
+    `secret` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `secrets_urlId_key`(`urlId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `posts` ADD CONSTRAINT `posts_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

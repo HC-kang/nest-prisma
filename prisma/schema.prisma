@@ -35,3 +35,11 @@ model Post {
 
   @@map("posts")
 }
+
+model Secret {
+  id        Int      @id @default(autoincrement())
+  urlId     String   @unique
+  secret    String
+
+  @@map("secrets")
+}

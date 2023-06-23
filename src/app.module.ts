@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config';
+import { SecretsModule } from './secrets/secrets.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { validationSchema } from './config';
       isGlobal: true,
       validationSchema,
     }),
+    SecretsModule,
   ],
 })
 export class AppModule {}
