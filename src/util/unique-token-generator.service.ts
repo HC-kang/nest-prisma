@@ -4,7 +4,7 @@ import { TokenGenerator } from './interface/token_generator.interface';
 @Injectable()
 export class UniqueTokenGeneratorService implements TokenGenerator {
   generateToken = (): string => {
-    const len = 10;
+    const len = 20;
     let result = '';
     const characters =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

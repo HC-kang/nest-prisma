@@ -12,17 +12,17 @@ export class SecretsController {
   constructor(private readonly secretsService: SecretsService) {}
 
   @Post()
-  create(@Body() createSecretDto: CreateSecretDto) {
-    return this.secretsService.create(createSecretDto);
+  async create(@Body() createSecretDto: CreateSecretDto) {
+    return await this.secretsService.create(createSecretDto);
   }
 
   @Get()
-  findAll() {
-    return this.secretsService.findAll();
+  async findAll() {
+    return await this.secretsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.secretsService.findOne(+id);
+  @Get(':urlId')
+  async findOne(@Param('urlId') urlId: string) {
+    return await this.secretsService.findOne(urlId);
   }
 }

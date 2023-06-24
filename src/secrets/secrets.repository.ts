@@ -14,13 +14,13 @@ export class SecretsRepository {
     return await this.prisma.secret.findMany();
   }
 
-  async findOne(id: number) {
+  async findOne(urlId: string) {
     return await this.prisma.secret.findUniqueOrThrow({
-      where: { id },
+      where: { urlId },
     });
   }
 
-  async remove(id: number) {
-    return await this.prisma.secret.delete({ where: { id } });
+  async remove(urlId: string) {
+    return await this.prisma.secret.delete({ where: { urlId } });
   }
 }
