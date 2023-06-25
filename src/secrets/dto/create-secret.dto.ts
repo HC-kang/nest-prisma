@@ -1,16 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString, MinLength } from 'class-validator';
+import { CreateSecretRequestDto } from './create-secret-request.dto';
 
-export class CreateSecretDto {
+export class CreateSecretDto extends CreateSecretRequestDto {
   @IsString()
   @IsOptional()
   @MinLength(10)
   @ApiProperty()
   urlId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(10)
-  @ApiProperty()
-  secret: string;
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateSecretDto } from './dto/create-secret.dto';
 import { SecretsRepository } from './secrets.repository';
 import { UniqueTokenGeneratorService } from '@src/util/unique-token-generator.service';
+import { CreateSecretRequestDto } from './dto/create-secret-request.dto';
 
 @Injectable()
 export class SecretsService {
@@ -10,7 +11,9 @@ export class SecretsService {
     private readonly tokenGenerator: UniqueTokenGeneratorService,
   ) {}
 
-  create(createSecretDto: CreateSecretDto) {
+  create(createSecretRequestDto: CreateSecretRequestDto) {
+    const createSecretDto = new CreateSecretDto();
+    createSecretDto.secret = createSecretRequestDto.secret;
     createSecretDto.urlId = this.tokenGenerator.generateToken();
     return this.secretsRepository.create(createSecretDto);
   }

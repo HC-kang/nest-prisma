@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { SecretsService } from './secrets.service';
-import { CreateSecretDto } from './dto/create-secret.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { SecretEntity } from './entities/secret.entity';
+import { CreateSecretRequestDto } from './dto/create-secret-request.dto';
 
 @Controller({
   path: 'secrets',
@@ -12,16 +13,19 @@ export class SecretsController {
   constructor(private readonly secretsService: SecretsService) {}
 
   @Post()
-  async create(@Body() createSecretDto: CreateSecretDto) {
-    return await this.secretsService.create(createSecretDto);
+  @ApiCreatedResponse({ type: SecretEntity })
+  async create(@Body() createSecretRequestDto: CreateSecretRequestDto) {
+    return await this.secretsService.create(createSecretRequestDto);
   }
 
   @Get()
+  @ApiOkResponse({ type: [SecretEntity] })
   async findAll() {
     return await this.secretsService.findAll();
   }
 
   @Get(':urlId')
+  @ApiOkResponse({ type: SecretEntity })
   async findOne(@Param('urlId') urlId: string) {
     return await this.secretsService.findOne(urlId);
   }

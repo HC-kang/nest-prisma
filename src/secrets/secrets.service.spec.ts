@@ -2,8 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SecretsService } from './secrets.service';
 import { SecretsRepository } from './secrets.repository';
 import { CreateSecretDto } from './dto/create-secret.dto';
-import { Secret } from '@prisma/client';
 import { UniqueTokenGeneratorService } from '@src/util/unique-token-generator.service';
+import { CreateSecretRequestDto } from './dto/create-secret-request.dto';
+import { SecretEntity } from './entities/secret.entity';
 
 describe('SecretsService', () => {
   let service: SecretsService;
@@ -35,20 +36,29 @@ describe('SecretsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a secret', () => {
-    const testSecret = 'testSecret';
+  it('should create a secret', async () => {
+    // Arrange
+    const testSecret = 'test-secret';
+    const testUrlId = 'test-url-id';
+    const createSecretRequestDto: CreateSecretRequestDto = {
+      secret: testSecret,
+    };
     const createSecretDto: CreateSecretDto = {
-      urlId: 'testUrlId',
-      secret: 'testSecret',
+      ...createSecretRequestDto,
+      urlId: testUrlId,
     };
-    const secret: Secret = {
-      id: 1,
+    const secretEntity: SecretEntity = {
       ...createSecretDto,
+      id: 1,
     };
-    mockSecretsRepository.create = jest.fn().mockResolvedValue(secret);
-    mockTokenGenerator.generateToken = jest.fn().mockReturnValue(testSecret);
+    mockSecretsRepository.create = jest.fn().mockResolvedValue(secretEntity);
+    mockTokenGenerator.generateToken = jest.fn().mockReturnValue(testUrlId);
 
-    expect(service.create(createSecretDto));
+    // Act
+    const result = await service.create(createSecretRequestDto);
+
+    // Assert
+    expect(result).toEqual(secretEntity);
     expect(mockSecretsRepository.create).toBeCalledWith(createSecretDto);
     expect(mockSecretsRepository.create).toBeCalledTimes(1);
     expect(mockTokenGenerator.generateToken).toBeCalledTimes(1);
