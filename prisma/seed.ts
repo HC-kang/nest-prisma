@@ -34,7 +34,7 @@ async function main() {
   });
 
   const post1 = await prisma.post.upsert({
-    where: { title: 'Prisma Adds Support for MongoDB' },
+    where: { id: 1 },
     update: {
       authorId: user1.id,
     },
@@ -49,7 +49,7 @@ async function main() {
   });
 
   const post2 = await prisma.post.upsert({
-    where: { title: "What's new in Prisma? (Q1/22)" },
+    where: { id: 2 },
     update: {
       authorId: user2.id,
     },

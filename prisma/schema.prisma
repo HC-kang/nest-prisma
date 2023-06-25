@@ -18,13 +18,14 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   posts     Post[]
+  comments  Comment[]
 
   @@map("users")
 }
 
 model Post {
   id          Int      @id @default(autoincrement())
-  title       String   @unique
+  title       String
   description String?
   body        String
   published   Boolean  @default(false)
@@ -32,8 +33,20 @@ model Post {
   updatedAt   DateTime @updatedAt
   author      User?    @relation(fields: [authorId], references: [id])
   authorId    Int?
+  comments    Comment[]
 
   @@map("posts")
+}
+
+model Comment {
+  id       Int      @id @default(autoincrement())
+  text     String
+  author   User?    @relation(fields: [authorId], references: [id])
+  authorId Int?
+  post     Post?    @relation(fields: [postId], references: [id])
+  postId   Int?
+
+  @@map("comments")
 }
 
 model Secret {

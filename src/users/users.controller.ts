@@ -45,36 +45,36 @@ export class UsersController {
     return users.map((user) => new UserEntity(user));
   }
 
-  @Get(':id')
+  @Get(':userId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return new UserEntity(await this.usersService.findOne(id));
+  async findOne(@Param('userId', ParseIntPipe) userId: number) {
+    return new UserEntity(await this.usersService.findOne(userId));
   }
 
-  @Patch(':id')
+  @Patch(':userId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('userId', ParseIntPipe) userId: number,
     @Body() updateUserDto: UpdateUserDto,
     @CurrentUser() user: Partial<UserEntity>,
   ) {
     return new UserEntity(
-      await this.usersService.update(id, updateUserDto, user),
+      await this.usersService.update(userId, updateUserDto, user),
     );
   }
 
-  @Delete(':id')
+  @Delete(':userId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async remove(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('userId', ParseIntPipe) userId: number,
     @CurrentUser() user: Partial<UserEntity>,
   ) {
-    return new UserEntity(await this.usersService.remove(id, user));
+    return new UserEntity(await this.usersService.remove(userId, user));
   }
 }
