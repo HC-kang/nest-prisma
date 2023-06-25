@@ -19,21 +19,21 @@ export class PostsRepository {
     return await this.prisma.post.findMany({ where: { published: false } });
   }
 
-  async findOne(id: number) {
+  async findOne(postId: number) {
     return await this.prisma.post.findUniqueOrThrow({
-      where: { id },
+      where: { id: postId },
       include: { author: true },
     });
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
+  async update(postId: number, updatePostDto: UpdatePostDto) {
     return await this.prisma.post.update({
-      where: { id },
+      where: { id: postId },
       data: updatePostDto,
     });
   }
 
-  async remove(id: number) {
-    return await this.prisma.post.delete({ where: { id } });
+  async remove(postId: number) {
+    return await this.prisma.post.delete({ where: { id: postId } });
   }
 }

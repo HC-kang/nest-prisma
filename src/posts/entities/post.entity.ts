@@ -25,10 +25,10 @@ export class PostEntity implements Post {
   updatedAt: Date;
 
   @ApiProperty({ required: false, nullable: true })
-  authorId: number | null;
+  authorId: number;
 
   @ApiProperty({ required: false, type: UserEntity })
-  author?: UserEntity | null;
+  author?: UserEntity;
 
   constructor({ author, ...data }: Partial<PostEntity>) {
     Object.assign(this, data);

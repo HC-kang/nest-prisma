@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import {
   ApiBearerAuth,
@@ -22,6 +21,7 @@ import { PostEntity } from './entities/post.entity';
 import { JwtAuthGuard } from '@src/common/guards/jwt-auth.guard';
 import { CurrentUser } from '@src/common/decorators/current-user.decorator';
 import { UserEntity } from '@src/users/entities/user.entity';
+import { CreatePostRequestDto } from './dto/create-post-request.dto';
 
 @Controller({
   path: 'posts',
@@ -35,8 +35,13 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: PostEntity })
-  async create(@Body() createPostDto: CreatePostDto) {
-    return new PostEntity(await this.postsService.create(createPostDto));
+  async create(
+    @Body() createPostRequestDto: CreatePostRequestDto,
+    @CurrentUser() user: Partial<UserEntity>,
+  ) {
+    return new PostEntity(
+      await this.postsService.create(user.id, createPostRequestDto),
+    );
   }
 
   @Get()
@@ -53,36 +58,36 @@ export class PostsController {
     return drafts.map((post) => new PostEntity(post));
   }
 
-  @Get(':id')
+  @Get(':postId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: PostEntity })
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return new PostEntity(await this.postsService.findOne(id));
+  async findOne(@Param('postId', ParseIntPipe) postId: number) {
+    return new PostEntity(await this.postsService.findOne(postId));
   }
 
-  @Patch(':id')
+  @Patch(':postId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: PostEntity })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('postId', ParseIntPipe) postId: number,
     @Body() updatePostDto: UpdatePostDto,
     @CurrentUser() user: Partial<UserEntity>,
   ) {
     return new PostEntity(
-      await this.postsService.update(id, updatePostDto, user),
+      await this.postsService.update(postId, updatePostDto, user),
     );
   }
 
-  @Delete(':id')
+  @Delete(':postId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: PostEntity })
   async remove(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('postId', ParseIntPipe) postId: number,
     @CurrentUser() user: Partial<UserEntity>,
   ) {
-    return new PostEntity(await this.postsService.remove(id, user));
+    return new PostEntity(await this.postsService.remove(postId, user));
   }
 }
