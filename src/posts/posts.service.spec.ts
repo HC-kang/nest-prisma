@@ -4,7 +4,7 @@ import { PostsRepository } from './posts.repository';
 
 describe('PostsService', () => {
   let service: PostsService;
-  let mockPostsRepository: Partial<PostsService>;
+  let mockPostsRepository: Partial<PostsRepository>;
 
   beforeEach(async () => {
     mockPostsRepository = {};
