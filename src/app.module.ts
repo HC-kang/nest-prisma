@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config';
 import { SecretsModule } from './secrets/secrets.module';
 import { CommentsModule } from './comments/comments.module';
+import { PostCategoriesModule } from './post-categories/post-categories.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CommentsModule } from './comments/comments.module';
     }),
     SecretsModule,
     CommentsModule,
+    PostCategoriesModule,
   ],
 })
 export class AppModule {}
