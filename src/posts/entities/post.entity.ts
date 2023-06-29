@@ -9,14 +9,26 @@ export class PostEntity implements Post {
   @ApiProperty()
   title: string;
 
-  @ApiProperty({ required: false, nullable: true })
-  description: string | null;
+  @ApiProperty()
+  content: string;
 
   @ApiProperty()
-  body: string;
+  strippedContent: string;
 
   @ApiProperty()
-  published: boolean;
+  postCategoryId: number;
+
+  @ApiProperty()
+  viewCount: number;
+
+  @ApiProperty()
+  isNotice: boolean;
+
+  @ApiProperty()
+  isSecret: boolean;
+
+  @ApiProperty()
+  isDraft: boolean;
 
   @ApiProperty()
   createdAt: Date;
@@ -24,17 +36,20 @@ export class PostEntity implements Post {
   @ApiProperty()
   updatedAt: Date;
 
+  @ApiProperty()
+  deletedAt: Date;
+
   @ApiProperty({ required: false, nullable: true })
-  authorId: number;
+  userId: number;
 
   @ApiProperty({ required: false, type: UserEntity })
-  author?: UserEntity;
+  user?: UserEntity;
 
-  constructor({ author, ...data }: Partial<PostEntity>) {
+  constructor({ user, ...data }: Partial<PostEntity>) {
     Object.assign(this, data);
 
-    if (author) {
-      this.author = new UserEntity(author);
+    if (user) {
+      this.user = new UserEntity(user);
     }
   }
 }

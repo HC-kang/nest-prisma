@@ -22,6 +22,7 @@ model User {
   deletedAt       DateTime?
   posts           Post[]
   comments        Comment[]
+  uploadedImages  UploadedImages[]
 
   @@map("users")
 }
@@ -42,6 +43,7 @@ model Post {
   user            User?     @relation(fields: [userId], references: [id])
   userId          Int?
   comments        Comment[]
+  uploadedImages  UploadedImages[]
 
   @@map("posts")
 }
@@ -69,7 +71,29 @@ model PostCategory {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
   @@map("post_categories")
+}
+
+model UploadedImages {
+  id        Int      @id @default(autoincrement())
+  type      Int      @db.TinyInt
+  width     Int
+  height    Int
+  mime      String
+  filename  String
+  size      Int
+  filepath  String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
+
+  @@map("uploaded_images")
 }
 
 model Secret {

@@ -12,17 +12,17 @@ export class PostsRepository {
   }
 
   async findAll() {
-    return await this.prisma.post.findMany({ where: { published: true } });
+    return await this.prisma.post.findMany({ where: { isDraft: false } });
   }
 
   async findDrafts() {
-    return await this.prisma.post.findMany({ where: { published: false } });
+    return await this.prisma.post.findMany({ where: { isDraft: true } });
   }
 
   async findOne(postId: number) {
     return await this.prisma.post.findUniqueOrThrow({
       where: { id: postId },
-      include: { author: true },
+      include: { user: true },
     });
   }
 

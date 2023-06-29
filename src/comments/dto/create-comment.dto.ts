@@ -6,5 +6,5 @@ export class CreateCommentDto extends CreateCommentRequestDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
-  authorId: number;
+  userId: number;
 }

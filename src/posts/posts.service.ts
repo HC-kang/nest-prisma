@@ -12,7 +12,8 @@ export class PostsService {
   async create(userId: number, createPostRequestDto: CreatePostRequestDto) {
     const createPostDto: CreatePostDto = {
       ...createPostRequestDto,
-      authorId: userId,
+      userId: userId,
+      strippedContent: createPostRequestDto.content, // TODO: strip HTML tags
     };
     return await this.postsRepository.create(createPostDto);
   }
@@ -35,7 +36,7 @@ export class PostsService {
     currentUser: Partial<UserEntity>,
   ) {
     const aPost = await this.postsRepository.findOne(postId);
-    if (aPost?.authorId === currentUser.id) {
+    if (aPost?.userId === currentUser.id) {
       throw new UnauthorizedException('You are not authorized to do this');
     }
     return await this.postsRepository.update(postId, updatePostDto);
@@ -43,7 +44,7 @@ export class PostsService {
 
   async remove(postId: number, currentUser: Partial<UserEntity>) {
     const aPost = await this.postsRepository.findOne(postId);
-    if (aPost?.authorId === currentUser.id) {
+    if (aPost?.userId === currentUser.id) {
       throw new UnauthorizedException('You are not authorized to do this');
     }
     return await this.postsRepository.remove(postId);

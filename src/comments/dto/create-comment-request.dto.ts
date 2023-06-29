@@ -13,7 +13,12 @@ export class CreateCommentRequestDto {
   @MinLength(10)
   @MaxLength(300)
   @ApiProperty()
-  text: string;
+  content: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  strippedContent: string;
 
   @IsNumber()
   @IsNotEmpty()

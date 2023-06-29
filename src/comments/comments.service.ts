@@ -15,7 +15,7 @@ export class CommentsService {
   ) {
     const createCommentDto: CreateCommentDto = {
       ...createCommentRequestDto,
-      authorId: userId,
+      userId: userId,
     };
     return await this.commentsRepository.create(createCommentDto);
   }
@@ -34,7 +34,7 @@ export class CommentsService {
     currentUser: Partial<UserEntity>,
   ) {
     const aComment = await this.commentsRepository.findOne(id);
-    if (aComment?.authorId !== currentUser.id) {
+    if (aComment?.userId !== currentUser.id) {
       throw new UnauthorizedException('You are not authorized to do this');
     }
     return await this.commentsRepository.update(id, updateCommentDto);
@@ -42,7 +42,7 @@ export class CommentsService {
 
   async remove(id: number, currentUser: Partial<UserEntity>) {
     const aComment = await this.commentsRepository.findOne(id);
-    if (aComment?.authorId !== currentUser.id) {
+    if (aComment?.userId !== currentUser.id) {
       throw new UnauthorizedException('You are not authorized to do this');
     }
     return await this.commentsRepository.remove(id);
