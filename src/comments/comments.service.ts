@@ -11,40 +11,52 @@ export class CommentsService {
 
   async create(
     userId: number,
+    postId: number,
     createCommentRequestDto: CreateCommentRequestDto,
   ) {
     const createCommentDto: CreateCommentDto = {
       ...createCommentRequestDto,
+      strippedContent: createCommentRequestDto.content, // TODO: strip html tags
       userId: userId,
+      postId,
     };
     return await this.commentsRepository.create(createCommentDto);
   }
 
-  async findAll() {
-    return await this.commentsRepository.findAll();
+  async findAllByPostId(postId: number) {
+    return await this.commentsRepository.findAllByPostId(postId);
   }
 
-  async findOne(id: number) {
-    return await this.commentsRepository.findOne(id);
+  async findOne(postId: number, commentId: number) {
+    return await this.commentsRepository.findOne(postId, commentId);
   }
 
   async update(
-    id: number,
+    postId: number,
+    commentId: number,
     updateCommentDto: UpdateCommentDto,
     currentUser: Partial<UserEntity>,
   ) {
-    const aComment = await this.commentsRepository.findOne(id);
+    const aComment = await this.commentsRepository.findOne(postId, commentId);
     if (aComment?.userId !== currentUser.id) {
       throw new UnauthorizedException('You are not authorized to do this');
     }
-    return await this.commentsRepository.update(id, updateCommentDto);
+    return await this.commentsRepository.update(
+      postId,
+      commentId,
+      updateCommentDto,
+    );
   }
 
-  async remove(id: number, currentUser: Partial<UserEntity>) {
-    const aComment = await this.commentsRepository.findOne(id);
+  async remove(
+    postId: number,
+    commentId: number,
+    currentUser: Partial<UserEntity>,
+  ) {
+    const aComment = await this.commentsRepository.findOne(postId, commentId);
     if (aComment?.userId !== currentUser.id) {
       throw new UnauthorizedException('You are not authorized to do this');
     }
-    return await this.commentsRepository.remove(id);
+    return await this.commentsRepository.remove(postId, commentId);
   }
 }

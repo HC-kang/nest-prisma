@@ -11,22 +11,33 @@ export class CommentsRepository {
     return await this.prisma.comment.create({ data: createCommentDto });
   }
 
-  async findAll() {
-    return await this.prisma.comment.findMany();
+  async findAllByPostId(postId: number) {
+    return await this.prisma.comment.findMany({ where: { postId } });
   }
 
-  async findOne(id: number) {
-    return await this.prisma.comment.findUniqueOrThrow({ where: { id } });
+  async findOne(postId: number, commentId: number) {
+    console.error(postId, commentId);
+    const result = await this.prisma.comment.findFirstOrThrow({
+      where: {
+        AND: [{ postId: postId }, { id: commentId }],
+      },
+    });
+    console.log(result);
+    return result;
   }
 
-  async update(id: number, updateCommentDto: UpdateCommentDto) {
+  async update(
+    postId: number,
+    commentId: number,
+    updateCommentDto: UpdateCommentDto,
+  ) {
     return await this.prisma.comment.update({
-      where: { id },
+      where: { id: commentId },
       data: updateCommentDto,
     });
   }
 
-  async remove(id: number) {
-    return await this.prisma.comment.delete({ where: { id } });
+  async remove(postId: number, commentId: number) {
+    return await this.prisma.comment.delete({ where: { id: commentId } });
   }
 }

@@ -24,7 +24,7 @@ import { CommentEntity } from './entities/comment.entity';
 import { CreateCommentRequestDto } from './dto/create-comment-request.dto';
 
 @Controller({
-  path: 'comments',
+  path: 'posts/:postId/comments',
   version: '1',
 })
 @ApiTags('comments')
@@ -36,26 +36,34 @@ export class CommentsController {
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: CommentEntity })
   async create(
+    @Param('postId', ParseIntPipe) postId: number,
     @Body() createCommentRequestDto: CreateCommentRequestDto,
     @CurrentUser() user: Partial<UserEntity>,
   ) {
-    return await this.commentsService.create(user.id, createCommentRequestDto);
+    return await this.commentsService.create(
+      user.id,
+      postId,
+      createCommentRequestDto,
+    );
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: [CommentEntity] })
-  async findAll() {
-    return await this.commentsService.findAll();
+  async findAll(@Param('postId', ParseIntPipe) postId: number) {
+    return await this.commentsService.findAllByPostId(postId);
   }
 
   @Get(':commentId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: CommentEntity })
-  async findOne(@Param('commentId', ParseIntPipe) commentId: number) {
-    return await this.commentsService.findOne(commentId);
+  async findOne(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
+  ) {
+    return await this.commentsService.findOne(postId, commentId);
   }
 
   @Patch(':commentId')
@@ -63,11 +71,17 @@ export class CommentsController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: CommentEntity })
   async update(
+    @Param('postId', ParseIntPipe) postId: number,
     @Param('commentId', ParseIntPipe) commentId: number,
     @Body() updateCommentDto: UpdateCommentDto,
     @CurrentUser() user: Partial<UserEntity>,
   ) {
-    return await this.commentsService.update(commentId, updateCommentDto, user);
+    return await this.commentsService.update(
+      postId,
+      commentId,
+      updateCommentDto,
+      user,
+    );
   }
 
   @Delete(':commentId')
@@ -75,9 +89,10 @@ export class CommentsController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: CommentEntity })
   async remove(
+    @Param('postId', ParseIntPipe) postId: number,
     @Param('commentId', ParseIntPipe) commentId: number,
     @CurrentUser() user: Partial<UserEntity>,
   ) {
-    return await this.commentsService.remove(commentId, user);
+    return await this.commentsService.remove(postId, commentId, user);
   }
 }
