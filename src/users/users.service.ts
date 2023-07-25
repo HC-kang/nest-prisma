@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
 import { UserEntity } from './entities/user.entity';
+import { strings } from '@src/common/resources/strings';
 
 export const roundsOfHashing = 10;
 @Injectable()
@@ -35,7 +36,7 @@ export class UsersService {
     currentUser: Partial<UserEntity>,
   ) {
     if (currentUser.id !== userId) {
-      throw new UnauthorizedException('You are not authorized to do this');
+      throw new UnauthorizedException(strings.common.errors.unauthorized);
     }
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(
@@ -49,7 +50,7 @@ export class UsersService {
 
   async remove(userId: number, currentUser: Partial<UserEntity>) {
     if (currentUser.id !== userId) {
-      throw new UnauthorizedException('You are not authorized to do this');
+      throw new UnauthorizedException(strings.common.errors.unauthorized);
     }
     return await this.usersRepository.remove(userId);
   }

@@ -1,6 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ErrorResponse } from '../interfaces/error-response.interface';
+import { strings } from '../resources/strings';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter implements ExceptionFilter {
@@ -12,16 +13,22 @@ export class PrismaClientExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest();
 
     const errorLookup: Record<string, { status: number; message: string }> = {
-      P2025: { status: 404, message: 'Record not found' },
+      P2025: { status: 404, message: strings.common.errors.notFound },
       P2002: {
         status: 400,
-        message: 'A record with the same key already exists',
+        message: strings.common.errors.alreadyExists,
       },
-      P2003: { status: 400, message: 'The relation does not exist' },
-      P2016: { status: 400, message: 'The required value is null' },
+      P2003: {
+        status: 400,
+        message: strings.common.errors.relationDoesNotExist,
+      },
+      P2016: {
+        status: 400,
+        message: strings.common.errors.requiredValueIsNull,
+      },
     };
 
-    const { status = 500, message = 'An unexpected error occurred' } =
+    const { status = 500, message = strings.common.errors.unexpectedError } =
       errorLookup[exception.code] || {};
 
     const errorResponse: ErrorResponse = {
