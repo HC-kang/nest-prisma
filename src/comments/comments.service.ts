@@ -4,6 +4,8 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentsRepository } from './comments.repository';
 import { UserEntity } from '@src/users/entities/user.entity';
 import { CreateCommentRequestDto } from './dto/create-comment-request.dto';
+import { stripHtmlTags } from '@src/common/utils/utils';
+import { strings } from '@src/common/resources/strings';
 
 @Injectable()
 export class CommentsService {
@@ -16,9 +18,9 @@ export class CommentsService {
   ) {
     const createCommentDto: CreateCommentDto = {
       ...createCommentRequestDto,
-      strippedContent: createCommentRequestDto.content, // TODO: strip html tags
       userId: userId,
       postId,
+      strippedContent: stripHtmlTags(createCommentRequestDto.content),
     };
     return await this.commentsRepository.create(createCommentDto);
   }
@@ -39,13 +41,12 @@ export class CommentsService {
   ) {
     const aComment = await this.commentsRepository.findOne(postId, commentId);
     if (aComment?.userId !== currentUser.id) {
-      throw new UnauthorizedException('You are not authorized to do this');
+      throw new UnauthorizedException(strings.common.errors.unauthorized);
     }
-    return await this.commentsRepository.update(
-      postId,
-      commentId,
-      updateCommentDto,
-    );
+    return await this.commentsRepository.update(postId, commentId, {
+      ...updateCommentDto,
+      strippedContent: stripHtmlTags(updateCommentDto.content),
+    });
   }
 
   async remove(
@@ -55,7 +56,7 @@ export class CommentsService {
   ) {
     const aComment = await this.commentsRepository.findOne(postId, commentId);
     if (aComment?.userId !== currentUser.id) {
-      throw new UnauthorizedException('You are not authorized to do this');
+      throw new UnauthorizedException(strings.common.errors.unauthorized);
     }
     return await this.commentsRepository.remove(postId, commentId);
   }

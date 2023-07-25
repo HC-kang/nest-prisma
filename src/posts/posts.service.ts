@@ -4,6 +4,8 @@ import { PostsRepository } from './posts.repository';
 import { UserEntity } from '@src/users/entities/user.entity';
 import { CreatePostRequestDto } from './dto/create-post-request.dto';
 import { CreatePostDto } from './dto/create-post.dto';
+import { stripHtmlTags } from '@src/common/utils/utils';
+import { strings } from '@src/common/resources/strings';
 
 @Injectable()
 export class PostsService {
@@ -13,7 +15,7 @@ export class PostsService {
     const createPostDto: CreatePostDto = {
       ...createPostRequestDto,
       userId: userId,
-      strippedContent: createPostRequestDto.content, // TODO: strip HTML tags
+      strippedContent: stripHtmlTags(createPostRequestDto.content),
     };
     return await this.postsRepository.create(createPostDto);
   }
@@ -37,15 +39,18 @@ export class PostsService {
   ) {
     const aPost = await this.postsRepository.findOne(postId);
     if (aPost?.userId !== currentUser.id) {
-      throw new UnauthorizedException('You are not authorized to do this');
+      throw new UnauthorizedException(strings.common.errors.unauthorized);
     }
-    return await this.postsRepository.update(postId, updatePostDto);
+    return await this.postsRepository.update(postId, {
+      ...updatePostDto,
+      strippedContent: stripHtmlTags(updatePostDto.content),
+    });
   }
 
   async remove(postId: number, currentUser: Partial<UserEntity>) {
     const aPost = await this.postsRepository.findOne(postId);
     if (aPost?.userId !== currentUser.id) {
-      throw new UnauthorizedException('You are not authorized to do this');
+      throw new UnauthorizedException(strings.common.errors.unauthorized);
     }
     return await this.postsRepository.remove(postId);
   }
